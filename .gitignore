@@ -145,3 +145,6 @@ req.txt
 environment.yml
 
 calculate_metrics.py
+
+
+data/
