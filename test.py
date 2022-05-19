@@ -11,6 +11,7 @@ from PIL import Image
 from models.HD2S import HD2S as modelName
 
 dev = "cuda:0"
+dev = "cpu"
 image_size = (128, 192)
 
 
@@ -65,22 +66,28 @@ def main():
             if os.path.isdir(os.path.join(path_frames, v))
         ]
 
+    print(list_video)
     for v in list_video:
         destination_path = os.path.join(path_output, os.path.splitext(v)[0])
-        print(destination_path)
+        print(f"Destination Path: ", destination_path)
         if not os.path.isdir(destination_path):
             os.mkdir(destination_path)
 
             if fromVideo:
                 list_frames = resized_frames_from_video(v, path_video)
             else:
-                list_frame_names = [
-                    f
-                    for f in os.listdir(os.path.join(path_frames, v))
-                    if os.path.isfile(os.path.join(path_frames, v, f))
-                ]
+                list_frame_names = sorted(
+                    [
+                        f
+                        for f in os.listdir(os.path.join(path_frames, v))
+                        if os.path.isfile(os.path.join(path_frames, v, f))
+                    ]
+                )
                 list_frames = []
+
                 for f in list_frame_names:
+                    if f == ".DS_Store":
+                        continue
                     img = cv2.imread(os.path.join(path_frames, v, f))
                     img = cv2.resize(
                         img,
